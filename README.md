@@ -1,6 +1,7 @@
-# tomox-market-maker
-_Simple market maker to create liquidity/volume for TomoX_
+# mm-bot
 
+# Requirements
+- nodejs 10+
 
 ## Install
 ```
