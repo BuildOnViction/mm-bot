@@ -84,6 +84,12 @@ function run() {
                 message : 'If price provider is coingecko, enter your base quote name...',
                 default: ''
             })
+            questions.push({
+                type : 'input',
+                name : 'seedPrice',
+                message : 'If price provider is pool, enter the token price...',
+                default: ''
+            })
             prompt(questions).then(async answers => {
                 try {
                     let tomojsPath = path.resolve(configPath)
@@ -130,7 +136,7 @@ PRICE_PROVIDER=${answers.priceProvider}
 RELAYER_URL=${relayerUrl}
 RPC_URL=https://rpc.devnet.tomochain.com
 ORDERBOOK_LENGTH=5
-SEED_PRICE=1
+SEED_PRICE=${answers.seedPrice}
 BOT_SPEED=200000
 WASH_SPEED=200000
 ORDER_SIZE=5
