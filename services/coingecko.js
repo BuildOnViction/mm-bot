@@ -1,5 +1,4 @@
 const axios = require('axios')
-const config = require('config')
 
 var gPrice
 var gUSDPrice
