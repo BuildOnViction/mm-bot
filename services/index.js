@@ -12,6 +12,7 @@ module.exports = (priceProvider = 'binance', p = false) => {
         case 'coingecko':
             return Coingecko
         case 'pool':
+            Pool.init()
             return Pool
         default:
             return Binance

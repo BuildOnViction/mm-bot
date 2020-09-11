@@ -1,10 +1,9 @@
 const axios = require('axios')
-const config = require('config')
 const TomoX = require('tomoxjs')
 const BigNumber = require('bignumber.js')
 
-const gPrice = {}
-const gUSDPrice = {}
+var gPrice
+var gUSDPrice
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 2500
@@ -12,71 +11,53 @@ httpClient.defaults.timeout = 2500
 let TOKEN_DECIMALS = 1e18
 let tomox = new TomoX()
 
-const init = async (p)  => {
-    tomox = new TomoX(config.get('relayerUrl'), '', config[p].pkey)
-    const orderBookData = await tomox.getOrderBook({
-        baseToken: config[p].baseToken,
-        quoteToken: config[p].quoteToken
-    })
-    let bestAsk = new BigNumber(orderBookData.asks[0].pricepoint)
-    let bestBid = new BigNumber(orderBookData.bids[0].pricepoint)
-
-    let price = bestAsk.plus(bestBid).dividedBy(2)
-    let d = (await tomox.getTokenInfo(config[p].quoteToken)).decimals
+const init = async ()  => {
+    tomox = new TomoX(process.env.RELAYER_URL, '', process.env.MAIN_PKEY)
+    let d = (await tomox.getTokenInfo(process.env.QUOTE_TOKEN)).decimals
     TOKEN_DECIMALS = 10 ** parseInt(d)
-    gPrice[p] = price.dividedBy(TOKEN_DECIMALS).toFixed(8)
-
+    gPrice = process.env.SEED_PRICE
 }
 
-const getLatestPrice = async (p = false) => {
-    await init(p)
+const getLatestPrice = async () => {
     try {
         const orderBookData = await tomox.getOrderBook({
-            baseToken: config[p].baseToken,
-            quoteToken: config[p].quoteToken
+            baseToken: process.env.BASE_TOKEN,
+            quoteToken: process.env.QUOTE_TOKEN
         })
         let bestAsk = new BigNumber(orderBookData.asks[0].pricepoint)
         let bestBid = new BigNumber(orderBookData.bids[0].pricepoint)
 
         let price = bestAsk.plus(bestBid).dividedBy(2)
-        gPrice[p] = price.dividedBy(TOKEN_DECIMALS).toFixed(8)
+        gPrice = price.dividedBy(TOKEN_DECIMALS).toFixed(8)
 
     } catch (err) {
         console.log(err)
     }
-    return gPrice[p]
+    return gPrice
 }
 
-const getUSDPrice = async (p = false) => {
-    let baseSymbol = 'TOMO'
-    let quoteSymbol = 'USDT'
+const getUSDPrice = async () => {
+    let baseSymbol = process.env.BASE_SYMBOL
+    let quoteSymbol = process.env.QUOTE_SYMBOL
     try {
-        if (p && (config[p] || {}).price) {
-            return config[p].price
-        }
-
-        let arr = p.split('-')
-        baseSymbol = arr[0].toUpperCase()
-        quoteSymbol = arr[1].toUpperCase()
-
         if (baseSymbol != 'USDT' && baseSymbol != 'USD') {
             if (quoteSymbol != 'USDT') {
                 let quoteMarket = await tomox.getMarket({
-                    baseToken: config[p].quoteToken,
-                    quoteToken: config[p].usdtAddress
+                    baseToken: process.env.BASE_TOKEN,
+                    quoteToken: process.env.QUOTE_TOKEN
                 })
-                gUSDPrice[baseSymbol] = parseFloat(gPrice[p]) * parseFloat(quoteMarket.closeBaseUsd)
+                gUSDPrice = parseFloat(gPrice) * parseFloat(quoteMarket.closeBaseUsd)
             } else {
-                gUSDPrice[baseSymbol] = gPrice[p]
+                gUSDPrice = gPrice
             }
 
         } else {
-            gUSDPrice[baseSymbol] = 1
+            gUSDPrice = 1
         }
     } catch (err) {
         console.log(err)
     }
-    return gUSDPrice[baseSymbol]
+    return gUSDPrice
 }
 
 module.exports = { init, getLatestPrice, getUSDPrice }

@@ -1,77 +1,63 @@
 const axios = require('axios')
-const config = require('config')
 
-const gPrice = {}
-const gUSDPrice = {}
+var gPrice
+var gUSDPrice
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 2500
 
-const getLatestPrice = async (p = false) => {
+const getLatestPrice = async () => {
     try {
-        if (p && (config[p] || {}).price) {
-            return config[p].price
-        }
-        let arr = p.split('-')
-        let baseSymbol = arr[0].toLowerCase()
-        let quoteSymbol = arr[1].toLowerCase()
-        if (quoteSymbol === 'usdt') {
-            quoteSymbol = 'usd'
-        }
+        let baseSymbol = process.env.BASE_SYMBOL
+        let quoteSymbol = process.env.QUOTE_SYMBOL
 
-        if (quoteSymbol === 'tomo') {
+        if (quoteSymbol === 'TOMO') {
             let response = await httpClient.get(`https://www.binance.com/api/v3/ticker/price?symbol=TOMOBTC`)
             let tomoPrice = response.data.price
 
-            if (baseSymbol === 'btc') {
-                gPrice[p] = 1/tomoPrice
+            if (baseSymbol === 'BTC') {
+                gPrice = 1/tomoPrice
             } else {
                 response = await httpClient.get(`https://www.binance.com/api/v3/ticker/price?symbol=${baseSymbol.toUpperCase()}BTC`)
                 let tokenPrice = response.data.price
 
-                gPrice[p] = (1/tomoPrice) * tokenPrice
+                gPrice = (1/tomoPrice) * tokenPrice
             }
-            return gPrice[p]
+            return gPrice
         }
 
-        if ( quoteSymbol === 'usd' ) {
+        if ( quoteSymbol === 'USDT' ) {
             const response = await httpClient.get(`https://www.binance.com/api/v3/ticker/price?symbol=${baseSymbol.toUpperCase()}USDT`)
-            gPrice[p] = response.data.price
+            gPrice = response.data.price
 
         } else {
             const response = await httpClient.get(
                 `https://www.binance.com/api/v3/ticker/price?symbol=${baseSymbol.toUpperCase()}${quoteSymbol.toUpperCase()}`
             )
-            gPrice[p] = response.data.price
+            gPrice = response.data.price
         }
     } catch (err) {
         console.log(err)
     }
-    return gPrice[p]
+    return gPrice
 }
 
-const getUSDPrice = async (p = false) => {
-    let baseSymbol = 'TOMO'
+const getUSDPrice = async () => {
+    let baseSymbol = process.env.BASE_SYMBOL
     try {
-        if (p && (config[p] || {}).price) {
-            return config[p].price
-        }
-
-        let arr = p.split('-')
-        baseSymbol = arr[0].toUpperCase()
 
         if (baseSymbol != 'USDT' && baseSymbol != 'USD') {
             response = await httpClient.get(`https://www.binance.com/api/v3/ticker/price?symbol=${baseSymbol}USDT`)
             let tokenPrice = response.data.price
 
-            gUSDPrice[baseSymbol] = tokenPrice
+            gUSDPrice = tokenPrice
         } else {
-            gUSDPrice[baseSymbol] = 1
+            gUSDPrice = 1
         }
     } catch (err) {
         console.log(err)
     }
-    return gUSDPrice[baseSymbol]
+    return gUSDPrice
 }
 
 module.exports = { getLatestPrice, getUSDPrice }

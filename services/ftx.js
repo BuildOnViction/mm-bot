@@ -1,20 +1,15 @@
 const axios = require('axios')
-const config = require('config')
 
-const gPrice = {}
-const gUSDPrice = {}
+var gPrice
+var gUSDPrice
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 2500
 
-const getLatestPrice = async (p = false) => {
+const getLatestPrice = async () => {
     try {
-        if (p && (config[p] || {}).price) {
-            return config[p].price
-        }
-        let arr = p.split('-')
-        let baseSymbol = arr[0].toLowerCase()
-        let quoteSymbol = arr[1].toLowerCase()
+        let baseSymbol = process.env.BASE_SYMBOL
+        let quoteSymbol = process.env.QUOTE_SYMBOL
         if (quoteSymbol === 'usdt') {
             quoteSymbol = 'usd'
         }
@@ -24,48 +19,42 @@ const getLatestPrice = async (p = false) => {
             let quotePrice = response.data['result'].price
 
             if (baseSymbol === 'usd') {
-                gPrice[p] = 1/quotePrice
+                gPrice = 1/quotePrice
             } else {
                 response = await httpClient.get(`https://ftx.com/api/markets/${baseSymbol.toUpperCase()}_USD`)
                 let tokenPrice = response.data['result'].price
 
-                gPrice[p] = (1/quotePrice) * tokenPrice
+                gPrice = (1/quotePrice) * tokenPrice
             }
-            return gPrice[p]
+            return gPrice
         }
 
 
         const response = await axios.get(`https://ftx.com/api/markets/${baseSymbol.toUpperCase()}_USD`)
-        gPrice[p] = response.data['result'].price
+        gPrice = response.data['result'].price
 
     } catch (err) {
         console.log(err)
     }
-    return gPrice[p]
+    return gPrice
 }
 
-const getUSDPrice = async (p = false) => {
-    let baseSymbol = 'TOMO'
+const getUSDPrice = async () => {
+    let baseSymbol = process.env.BASE_SYMBOL
     try {
-        if (p && (config[p] || {}).price) {
-            return config[p].price
-        }
-
-        let arr = p.split('-')
-        baseSymbol = arr[0].toUpperCase()
 
         if (baseSymbol != 'USDT' && baseSymbol != 'USD') {
             let response = await axios.get(`https://ftx.com/api/markets/${baseSymbol.toUpperCase()}_USD`)
             let tokenPrice = response.data['result'].price
-            gUSDPrice[baseSymbol] = tokenPrice
+            gUSDPrice = tokenPrice
         } else {
-            gUSDPrice[baseSymbol] = 1
+            gUSDPrice = 1
         }
 
     } catch (err) {
         console.log(err)
     }
-    return gUSDPrice[baseSymbol]
+    return gUSDPrice
 }
 
 module.exports = { getLatestPrice, getUSDPrice }

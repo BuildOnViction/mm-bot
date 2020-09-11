@@ -1,9 +1,9 @@
 const TomoX = require('tomoxjs')
 const TomoJS = require('tomojs')
 const BigNumber = require('bignumber.js')
-const config = require('config')
 const { calcPrecision } = require('../utils')
-const { getLatestPrice, getUSDPrice } = require('../services')(config.get('priceProvider'))
+
+const { getLatestPrice, getUSDPrice } = require('../services')(process.env.PRICE_PROVIDER)
 
 let defaultAmount = 1 // TOMO
 let defaultMatchedAmount = 1
@@ -13,13 +13,13 @@ let sellMinimumPriceStepChange = 1 // TOMO
 let randomRange = 20
 let FIXA = 5 // amount decimals
 let FIXP = 7 // price decimals
-let ORDERBOOK_LENGTH = config.get('orderbookLength') // number of order in orderbook
-let BUY_ORDERBOOK_LENGTH = config.get('orderbookLength')
-let SELL_ORDERBOOK_LENGTH = config.get('orderbookLength')
+let ORDERBOOK_LENGTH = process.env.ORDERBOOK_LENGTH
+let BUY_ORDERBOOK_LENGTH = process.env.ORDERBOOK_LENGTH
+let SELL_ORDERBOOK_LENGTH = process.env.ORDERBOOK_LENGTH
 let tomox = new TomoX()
-let pair = 'TOMO-BTC'
-let baseToken = 'TOMO'
-let quoteToken = 'BTC'
+let pair = `${process.env.BASE_SYMBOL}-${process.env.QUOTE_SYMBOL}`
+let baseToken = process.env.BASE_TOKEN
+let quoteToken = process.env.QUOTE_TOKEN
 let TOKEN_DECIMALS = 1e18
 let BASE_TOKEN_DECIMALS = 1e18
 let EX_DECIMALS = 1e8
@@ -76,7 +76,7 @@ const runMarketMaker = async (cancel = false) => {
         if (!orderBookData) {
             return
         }
-        latestPrice = new BigNumber(await getLatestPrice(pair)).multipliedBy(EX_DECIMALS)
+        latestPrice = new BigNumber(await getLatestPrice()).multipliedBy(EX_DECIMALS)
 
         if (SELL_ORDERBOOK_LENGTH > BUY_ORDERBOOK_LENGTH) {
             latestPrice = latestPrice.minus(buyMinimumPriceStepChange)
@@ -321,29 +321,25 @@ const match = async (orderBookData) => {
     }
 }
 
-const run = async (p) => {
-    tomox = new TomoX(config.get('relayerUrl'), '', config[p].pkey)
-    tomojs = await TomoJS.setProvider(config.get('rpc'), config[p].pkey)
-    pair = p || 'BTC-TOMO'
+const run = async () => {
+    tomox = new TomoX(process.env.RELAYER_URL, '', process.env.MAIN_PKEY)
+    tomojs = await TomoJS.setProvider(process.env.RPC_URL, process.env.MAIN_PKEY)
 
-    SELL_ORDERBOOK_LENGTH = BUY_ORDERBOOK_LENGTH = ORDERBOOK_LENGTH = config[p].orderbookLength || config.get('orderbookLength') || 5
-    if (config[p].orderbookLength === 0) {
-        ORDERBOOK_LENGTH = 0
-    }
+    SELL_ORDERBOOK_LENGTH = BUY_ORDERBOOK_LENGTH = ORDERBOOK_LENGTH = process.env.ORDERBOOK_LENGTH
 
-    baseToken = config[p].baseToken
-    quoteToken = config[p].quoteToken
-    defaultVolume = config[p].volume || config.volume
-    defaultMatchedVolume = config[p].matchedVolume || config.matchedVolume || defaultVolume
-    let randomPkeys = config[p].matches
+    defaultVolume = process.env.ORDER_SIZE
+    defaultMatchedVolume = process.env.WASH_ORDER_SIZE
+
+    let randomPkeys = process.env.RANDOM_PKEYS.split(',')
     for (let k of randomPkeys) {
-        randomWallets.push(new TomoX(config.get('relayerUrl'), '', k))
+        randomWallets.push(new TomoX(process.env.RELAYER_URL, '', k))
     }
 
-    let remotePrice = parseFloat(await getLatestPrice(pair))
+    let remotePrice = parseFloat(await getLatestPrice())
     latestPrice = new BigNumber(remotePrice).multipliedBy(EX_DECIMALS)
-    let usdPrice = parseFloat(await getUSDPrice(pair))
-    let step = config[p].step || config.step || 0.01
+    let usdPrice = parseFloat(await getUSDPrice())
+    let step = process.env.ORDER_STEP
+
     buyMinimumPriceStepChange = sellMinimumPriceStepChange = minimumPriceStepChange = latestPrice.multipliedBy(step)
 
     let d = (await tomox.getTokenInfo(quoteToken)).decimals
@@ -358,9 +354,9 @@ const run = async (p) => {
     defaultAmount = parseFloat(new BigNumber(defaultVolume).dividedBy(usdPrice).toFixed(FIXA))
     defaultMatchedAmount = parseFloat(new BigNumber(defaultMatchedVolume).dividedBy(usdPrice).toFixed(FIXA))
 
-    randomRange = config[pair].randomRange || config.randomRange|| 20
-    let speed = config[pair].speed || config.speed || 50000
-    let matchedSpeed = config[pair].matchedSpeed || config.matchedSpeed || speed
+    randomRange = process.env.RANDOM_RANGE
+    let speed = process.env.BOT_SPEED
+    let matchedSpeed = process.env.WASH_SPEED
 
     let k = matchedSpeed
     let cancel = false
@@ -415,7 +411,7 @@ const run = async (p) => {
         if (k >= speed) {
             cancel = true
             k = matchedSpeed
-            usdPrice = parseFloat(await getUSDPrice(pair))
+            usdPrice = parseFloat(await getUSDPrice())
             defaultAmount = parseFloat(new BigNumber(defaultVolume).dividedBy(usdPrice).toFixed(FIXA))
         } else {
             cancel = false
