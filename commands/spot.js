@@ -96,7 +96,7 @@ const runMarketMaker = async (cancel = false) => {
         let m = {}
         if (sellOrders.length >= SELL_ORDERBOOK_LENGTH
             && buyOrders.length >= BUY_ORDERBOOK_LENGTH) {
-            console.log('MATCHED ORDER !!!')
+            console.log('WASH TRADE !!!')
             m = await match(orderBookData)
         }
 
@@ -336,16 +336,17 @@ const run = async () => {
     }
 
     let remotePrice = parseFloat(await getLatestPrice())
+
     latestPrice = new BigNumber(remotePrice).multipliedBy(EX_DECIMALS)
     let usdPrice = parseFloat(await getUSDPrice())
     let step = process.env.ORDER_STEP
 
     buyMinimumPriceStepChange = sellMinimumPriceStepChange = minimumPriceStepChange = latestPrice.multipliedBy(step)
 
-    let d = (await tomox.getTokenInfo(quoteToken)).decimals
-    TOKEN_DECIMALS = 10 ** parseInt(d)
-    d = (await tomox.getTokenInfo(baseToken)).decimals
-    BASE_TOKEN_DECIMALS = 10 ** parseInt(d)
+    let quoteDecimals = (await tomox.getTokenInfo(quoteToken)).decimals
+    TOKEN_DECIMALS = 10 ** parseInt(quoteDecimals)
+    let baseDecimals = (await tomox.getTokenInfo(baseToken)).decimals
+    BASE_TOKEN_DECIMALS = 10 ** parseInt(baseDecimals)
 
     let prec = calcPrecision(remotePrice)
     FIXP = prec.pricePrecision
@@ -384,6 +385,24 @@ const run = async () => {
         buyMinimumPriceStepChange = sellMinimumPriceStepChange = minimumPriceStepChange = latestPrice.multipliedBy(step)
 
         let baseTokenBalance = new BigNumber((await tomox.getAccount(false, baseToken)).inUsdBalance)
+        if (baseTokenBalance.toString(10) === "0"){
+            baseTokenBalance = new BigNumber((await tomox.getAccount(false, baseToken)).balance).dividedBy(BASE_TOKEN_DECIMALS).multipliedBy(usdPrice)
+            // Init token price in order book by a wash trade
+            let orders = [{
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                price: remotePrice,
+                amount: defaultAmount,
+                side: 'SELL'
+            }, {
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                price: remotePrice,
+                amount: defaultAmount,
+                side: 'BUY'
+            }]
+            o = await tomox.createManyOrders(orders)
+        }
         let quoteTokenBalance = new BigNumber((await tomox.getAccount(false, quoteToken)).inUsdBalance)
         balanceRate = getStepRate(baseTokenBalance, quoteTokenBalance)
 

@@ -91,7 +91,7 @@ Enter your base token name...`,
             questions.push({
                 type : 'input',
                 name : 'seedPrice',
-                message : 'Enter the token price (USD)...',
+                message : 'Enter the token price ...',
                 when: (answers) => answers.priceProvider === 'pool'
             })
             prompt(questions).then(async answers => {
@@ -145,7 +145,7 @@ BOT_SPEED=200000
 WASH_SPEED=200000
 ORDER_SIZE=5
 RANDOM_RANGE=50
-WASH_ORDER_SIDE=5
+WASH_ORDER_SIZE=5
 ORDER_STEP=0.02`
                         , function (err) {
                         if (err) throw err;
@@ -180,6 +180,13 @@ ORDER_STEP=0.02`
         .action(async () => {
             const spot = require('./commands/spot')
             await spot.run()
+        })
+
+    commander
+        .command('balance')
+        .action(async () => {
+            let tomox = new TomoX(process.env.RELAYER_URL, '', process.env.MAIN_PKEY)
+            console.log(await tomox.getAccount())
         })
 
     commander.parse(process.argv)

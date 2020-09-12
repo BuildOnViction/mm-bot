@@ -15,7 +15,7 @@ const init = async ()  => {
     tomox = new TomoX(process.env.RELAYER_URL, '', process.env.MAIN_PKEY)
     let d = (await tomox.getTokenInfo(process.env.QUOTE_TOKEN)).decimals
     TOKEN_DECIMALS = 10 ** parseInt(d)
-    gPrice = process.env.SEED_PRICE
+    gPrice = process.env.TOKEN_PRICE
 }
 
 const getLatestPrice = async () => {
@@ -31,7 +31,7 @@ const getLatestPrice = async () => {
         gPrice = price.dividedBy(TOKEN_DECIMALS).toFixed(8)
 
     } catch (err) {
-        console.log(err)
+        console.log('Can not get price from orderbook data')
     }
     return gPrice
 }
@@ -55,7 +55,7 @@ const getUSDPrice = async () => {
             gUSDPrice = 1
         }
     } catch (err) {
-        console.log(err)
+        console.log('Can not get price in USD from orderbook data')
     }
     return gUSDPrice
 }
