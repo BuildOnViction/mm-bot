@@ -1,8 +1,8 @@
 {
   "name": "mm-bot",
-  "version": "0.1.0-beta",
+  "version": "0.1.1-beta",
   "scripts": {
-    "start": "mm-bot.js bot BTC-TOMO",
+    "start": "./mm-bot start",
     "lint": "eslint --cache ./ --ext .js"
   },
   "dependencies": {
