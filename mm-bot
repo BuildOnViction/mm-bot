@@ -75,20 +75,24 @@ function run() {
             questions.push({
                 type : 'input',
                 name : 'baseName',
-                message : 'If price provider is coingecko, enter your base token name...',
-                default: ''
+                message : `
+Find your token name at https://www.coingecko.com/api/documentations/v3#/coins/get_coins_list
+Enter your base token name...`,
+                default: '',
+                when: (answers) => answers.priceProvider === 'coingecko'
             })
             questions.push({
                 type : 'input',
                 name : 'quoteName',
-                message : 'If price provider is coingecko, enter your base quote name...',
-                default: ''
+                message : 'Enter your base quote name...',
+                default: '',
+                when: (answers) => answers.priceProvider === 'coingecko'
             })
             questions.push({
                 type : 'input',
                 name : 'seedPrice',
-                message : 'If price provider is pool, enter the token price...',
-                default: ''
+                message : 'Enter the token price (USD)...',
+                when: (answers) => answers.priceProvider === 'pool'
             })
             prompt(questions).then(async answers => {
                 try {
