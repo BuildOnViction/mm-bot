@@ -40,6 +40,6 @@ stages:
   - name: Lint
   - name: Test
   - name: Npm release
-    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomojs
+    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/mm-bot
   - name: Github release
-    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomojs
+    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/mm-bot
