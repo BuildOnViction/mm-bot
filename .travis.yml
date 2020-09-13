@@ -23,7 +23,7 @@ jobs:
       before_install:
         - npm install -g nexe@3.3.3
       script:
-        - nexe -i mm-bot -t linux-x64 -o mm-bot.$TRAVIS_TAG.linux-x64 -r ./
+        - nexe -i mm-bot -t linux-x64-10.18.0 -o mm-bot.$TRAVIS_TAG.linux-x64 -r ./
       deploy:
         provider: releases
         api_key: $GH_TOKEN
