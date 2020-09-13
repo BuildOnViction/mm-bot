@@ -70,4 +70,5 @@ WASH_ORDER_SIZE=5 // side of the wash orders
 ORDER_STEP=0.02 // Step of orders in per side. Next order = order * (1 +step)
 ```
 
-
+## Contribution
+Feel free to create an issue or PR
