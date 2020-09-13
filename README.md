@@ -45,7 +45,7 @@ mm-bot start
 ```
 
 
-**Advance usage**
+## Configuration
 You can update the bot configuration file (`${HOME}/.mm-bot/config`)to custom your bot.
 ```
 MAIN_PKEY=xxx // private of the main wallet
