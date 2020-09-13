@@ -3,30 +3,71 @@
 # Requirements
 - nodejs 10+
 
-## Install
+## Setup
+Using source code
 ```
 npm install
 ```
-Create `config/local.json` file
-```
-cp config/default.json config/local.json
-```
-Update `local.json` file with your parameters
 
-There are some parameters you need to update:
--  `ETH-TOMO`: Pair name
-- `pkey`: Private key of wallet that has enough balance for trades
-- `baseToken` and `quoteToken`: Addresses of pair
-- `relayerUrl`: The url of DEX, e.g `https://dex.testnet.tomochain.com`
-- `orderbookLength`: Number of orders that needs to be created by the bot.
-
-You can get pairs information via DEX API, e.g: DEX testnet `https://dex.testnet.tomochain.com/api/pairs/data`
+Using `mm-bot` binary
+```
+wget https://github.com/tomochain/mm-bot/releases/download/${MM_BOT_VERSION}/mm-bot.${MM_BOT_VERSION}.linux-x64 \
+    && chmod +x mm-bot.${MM_BOT_VERSION}.linux-x64 \
+    && mv mm-bot.${MM_BOT_VERSION}.linux-x64 /usr/bin/mm-bot \
+```
 
 ## Usage
 
-The bot supports any pairs with proper config
+Step 1: Init bot by command:
 
 ```
-node cmd.js bot BTC-TOMO
+mm-bot init
 ```
+
+The bot will ask you to setup the bot configuration.
+
+You can get base token, quote token information from [TomoDEX pair data](https://dex.tomochain.com/api/pairs)
+
+
+You can re-check the bot configuration:
+```
+mm-bot info
+```
+
+Step 2: Send quote token, base token to the main address of the bot.
+
+For example, you list FRONT/USDT. You have to send at least 1000 USD (in FRONT) and 1000 USDT to the main address.
+
+
+Step 3: Run bot
+```
+mm-bot start
+```
+
+
+**Advance usage**
+You can update the bot configuration file (`${HOME}/.mm-bot/config`)to custom your bot.
+```
+MAIN_PKEY=xxx // private of the main wallet
+RANDOM_PKEYS=xxx // private key of wash wallets for wash trade
+MAIN_ADDR=0x726DA688e2e09f01A2e1aB4c10F25B7CEdD4a0f3
+BASE_TOKEN=0xAad540ac542C3688652a3fc7b8e21B3fC1D097e9 // base token address
+BASE_SYMBOL=ETH // base token symbol
+BASE_NAME=undefined // base token name, requires for coingecko price provider
+QUOTE_TOKEN=0x45c25041b8e6CBD5c963E7943007187C3673C7c9 // quote token address
+QUOTE_SYMBOL=USDT // quote token symbol
+QUOTE_NAME=undefined // quote token name, requires for coingecko price provider
+PRICE_PROVIDER=ftx // price provider FTX, BINANCE, COINGECKO, POOL (self price provider)
+RELAYER_URL=https://dex.tomochain.com // DEX URL
+RPC_URL=https://rpc.tomochain.com // RPC URL
+ORDERBOOK_LENGTH=10 // number of orders that will be created by the bot in SELL/BUY side
+SEED_PRICE=undefined // seed price for pool, requires for pool price provider
+BOT_SPEED=200000 // speed to reload the bot (update price, cancel, create orders)
+WASH_SPEED=200000 // speed to wash trade
+ORDER_SIZE=5 // side of the order in USD
+RANDOM_RANGE=50 // percentage for range of side of the orders
+WASH_ORDER_SIZE=5 // side of the wash orders
+
+```
+
 
