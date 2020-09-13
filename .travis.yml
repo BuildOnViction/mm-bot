@@ -21,7 +21,7 @@ jobs:
 
     - stage: Github release
       before_install:
-        - npm install -g nexe@3.3.2
+        - npm install -g nexe@3.3.3
       script:
         - nexe -i mm-bot -t linux-x64 -o mm-bot.$TRAVIS_TAG.linux-x64 -r ./
       deploy:
