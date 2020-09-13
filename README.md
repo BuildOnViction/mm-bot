@@ -62,12 +62,12 @@ RELAYER_URL=https://dex.tomochain.com // DEX URL
 RPC_URL=https://rpc.tomochain.com // RPC URL
 ORDERBOOK_LENGTH=10 // number of orders that will be created by the bot in SELL/BUY side
 SEED_PRICE=undefined // seed price for pool, requires for pool price provider
-BOT_SPEED=200000 // speed to reload the bot (update price, cancel, create orders)
-WASH_SPEED=200000 // speed to wash trade
+BOT_SPEED=200000 // speed (ms) to reload the bot (update price, cancel, create orders)
+WASH_SPEED=200000 // speed (ms) to wash trade
 ORDER_SIZE=5 // side of the order in USD
 RANDOM_RANGE=50 // percentage for range of side of the orders
 WASH_ORDER_SIZE=5 // side of the wash orders
-
+ORDER_STEP=0.02 // Step of orders in per side. Next order = order * (1 +step)
 ```
 
 
