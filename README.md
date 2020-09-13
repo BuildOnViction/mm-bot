@@ -36,7 +36,7 @@ mm-bot info
 
 Step 2: Send quote token, base token to the main address of the bot.
 
-For example, you list FRONT/USDT. You have to send at least 1000 USD (in FRONT) and 1000 USDT to the main address.
+For example, you want to run bot for pair FRONT/USDT. You have to send at least 1000 USD (in FRONT) and 1000 USDT to the main address.
 
 
 Step 3: Run bot
