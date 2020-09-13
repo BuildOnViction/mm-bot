@@ -186,7 +186,8 @@ ORDER_STEP=0.02`
         .command('balance')
         .action(async () => {
             let tomox = new TomoX(process.env.RELAYER_URL, '', process.env.MAIN_PKEY)
-            console.log(await tomox.getAccount())
+            console.log(await tomox.getAccount(false, process.env.BASE_TOKEN))
+            console.log(await tomox.getAccount(false, process.env.QUOTE_TOKEN))
         })
 
     commander.parse(process.argv)
