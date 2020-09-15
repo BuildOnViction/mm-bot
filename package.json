@@ -1,6 +1,6 @@
 {
   "name": "mm-bot",
-  "version": "0.1.11-beta",
+  "version": "0.1.12-beta",
   "scripts": {
     "start": "./mm-bot start",
     "lint": "eslint --cache ./ --ext .js"
