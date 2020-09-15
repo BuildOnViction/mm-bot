@@ -28,7 +28,7 @@ jobs:
         provider: releases
         api_key: $GH_TOKEN
         overwrite: true
-        cleanup: true
+        cleanup: false
         file:
           - mm-bot.$TRAVIS_TAG.linux-x64
         on:
