@@ -205,6 +205,20 @@ INFURA_KEY=${answers.infuraKey}`
             info.QUOTE_TOKEN = process.env.QUOTE_TOKEN
             info.QUOTE_SYMBOL = process.env.QUOTE_SYMBOL
             info.PRICE_PROVIDER = process.env.PRICE_PROVIDER
+
+	    // uniswap provider information
+	    if (process.env.BASE_ERC20_ADDRESS) {
+	    	info.BASE_ERC20_ADDRESS = process.env.BASE_ERC20_ADDRESS
+	    }
+            if (process.env.BASE_ERC20_DECIMAL) {
+                info.BASE_ERC20_DECIMAL = process.env.BASE_ERC20_DECIMAL
+            }
+            if (process.env.QUOTE_ERC20_ADDRESS) {
+                info.QUOTE_ERC20_ADDRESS = process.env.QUOTE_ERC20_ADDRESS
+            }
+            if (process.env.QUOTE_ERC20_DECIMAL) {
+                info.QUOTE_ERC20_DECIMAL = process.env.QUOTE_ERC20_DECIMAL
+            }
             console.log(info)
         })
 
