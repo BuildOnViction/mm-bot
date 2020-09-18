@@ -70,7 +70,7 @@ function run() {
                 name : 'priceProvider',
                 message : 'Select the price provider:',
                 default: 'pool',
-                choices: ['pool', new Separator(), 'coingecko', 'binance', 'ftx']
+                choices: ['pool', new Separator(), 'coingecko', 'binance', 'ftx', 'uniswap']
             })
             questions.push({
                 type : 'input',
