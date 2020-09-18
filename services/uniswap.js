@@ -20,7 +20,7 @@ const getLatestPrice = async () => {
     try {
         let base = process.env.BASE_ERC20_ADDRESS,
             quote = process.env.QUOTE_ERC20_ADDRESS,
-            baseDecimal = process.env.BASE_ERC2_DECIMAL,
+            baseDecimal = process.env.BASE_ERC20_DECIMAL,
             quoteDecimal = process.env.QUOTE_ERC20_DECIMAL
 
         let uniPrice = await getUniswapPrice(base, baseDecimal, quote, quoteDecimal, CHAIN_ID, INFURA_KEY)
@@ -35,7 +35,7 @@ const getLatestPrice = async () => {
 
 const getUSDPrice = async () => {
     let base = process.env.BASE_ERC20_ADDRESS,
-        baseDecimal = process.env.BASE_ERC2_DECIMAL
+        baseDecimal = process.env.BASE_ERC20_DECIMAL
 
     try {
         // get USDT pair

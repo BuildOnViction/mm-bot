@@ -94,6 +94,36 @@ Enter your base token name...`,
                 message : 'Enter the token price ...',
                 when: (answers) => answers.priceProvider === 'pool'
             })
+	    questions.push({
+                type : 'input',
+                name : 'baseErc20Address',
+                message : 'Enter baseToken address on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'input',
+                name : 'baseErc20Decimal',
+                message : 'Enter decimal of baseToken on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'input',
+                name : 'quoteErc20Address',
+                message : 'Enter quoteToken address on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'input',
+                name : 'quoteErc20Decimal',
+                message : 'Enter decimal of quoteToken on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'password',
+                name : 'infuraKey',
+                message : 'Enter infura api key to retrieve data on Ethereum network',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
             prompt(questions).then(async answers => {
                 try {
                     let tomojsPath = path.resolve(configPath)
@@ -146,7 +176,12 @@ WASH_SPEED=100000
 ORDER_SIZE=20
 RANDOM_RANGE=50
 WASH_ORDER_SIZE=25
-ORDER_STEP=0.02`
+ORDER_STEP=0.02
+BASE_ERC20_ADDRESS=${answers.baseErc20Address}
+BASE_ERC20_DECIMAL=${answers.baseErc20Decimal}
+QUOTE_ERC20_ADDRESS=${answers.quoteErc20Address}
+QUOTE_ERC20_DECIMAL=${answers.quoteErc20Decimal}
+INFURA_KEY=${answers.infuraKey}`
                         , function (err) {
                         if (err) throw err;
                         console.log('Address:', address);
