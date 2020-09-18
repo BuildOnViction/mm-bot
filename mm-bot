@@ -70,7 +70,7 @@ function run() {
                 name : 'priceProvider',
                 message : 'Select the price provider:',
                 default: 'pool',
-                choices: ['pool', new Separator(), 'coingecko', 'binance', 'ftx']
+                choices: ['pool', new Separator(), 'coingecko', 'binance', 'ftx', 'uniswap']
             })
             questions.push({
                 type : 'input',
@@ -93,6 +93,36 @@ Enter your base token name...`,
                 name : 'seedPrice',
                 message : 'Enter the token price ...',
                 when: (answers) => answers.priceProvider === 'pool'
+            })
+	    questions.push({
+                type : 'input',
+                name : 'baseErc20Address',
+                message : 'Enter baseToken address on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'input',
+                name : 'baseErc20Decimal',
+                message : 'Enter decimal of baseToken on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'input',
+                name : 'quoteErc20Address',
+                message : 'Enter quoteToken address on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'input',
+                name : 'quoteErc20Decimal',
+                message : 'Enter decimal of quoteToken on Ethereum network...',
+                when: (answers) => answers.priceProvider === 'uniswap'
+            })
+            questions.push({
+                type : 'password',
+                name : 'infuraKey',
+                message : 'Enter infura api key to retrieve data on Ethereum network',
+                when: (answers) => answers.priceProvider === 'uniswap'
             })
             prompt(questions).then(async answers => {
                 try {
@@ -146,7 +176,12 @@ WASH_SPEED=100000
 ORDER_SIZE=20
 RANDOM_RANGE=50
 WASH_ORDER_SIZE=25
-ORDER_STEP=0.02`
+ORDER_STEP=0.02
+BASE_ERC20_ADDRESS=${answers.baseErc20Address}
+BASE_ERC20_DECIMAL=${answers.baseErc20Decimal}
+QUOTE_ERC20_ADDRESS=${answers.quoteErc20Address}
+QUOTE_ERC20_DECIMAL=${answers.quoteErc20Decimal}
+INFURA_KEY=${answers.infuraKey}`
                         , function (err) {
                         if (err) throw err;
                         console.log('Address:', address);
@@ -170,6 +205,20 @@ ORDER_STEP=0.02`
             info.QUOTE_TOKEN = process.env.QUOTE_TOKEN
             info.QUOTE_SYMBOL = process.env.QUOTE_SYMBOL
             info.PRICE_PROVIDER = process.env.PRICE_PROVIDER
+
+	    // uniswap provider information
+	    if (process.env.BASE_ERC20_ADDRESS) {
+	    	info.BASE_ERC20_ADDRESS = process.env.BASE_ERC20_ADDRESS
+	    }
+            if (process.env.BASE_ERC20_DECIMAL) {
+                info.BASE_ERC20_DECIMAL = process.env.BASE_ERC20_DECIMAL
+            }
+            if (process.env.QUOTE_ERC20_ADDRESS) {
+                info.QUOTE_ERC20_ADDRESS = process.env.QUOTE_ERC20_ADDRESS
+            }
+            if (process.env.QUOTE_ERC20_DECIMAL) {
+                info.QUOTE_ERC20_DECIMAL = process.env.QUOTE_ERC20_DECIMAL
+            }
             console.log(info)
         })
 

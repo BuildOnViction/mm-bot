@@ -68,6 +68,14 @@ ORDER_SIZE=5 // side of the order in USD
 RANDOM_RANGE=50 // percentage for range of side of the orders
 WASH_ORDER_SIZE=5 // side of the wash orders
 ORDER_STEP=0.02 // Step of orders in per side. Next order = order * (1 +step)
+
+// configuration for uniswap price provider only
+BASE_ERC20_ADDRESS= // address of baseToken on Ethereum network
+BASE_ERC20_DECIMAL= // decimal of baseToken on Ethereum network
+QUOTE_ERC20_ADDRESS= // address of quoteToken on Ethereum network
+QUOTE_ERC20_DECIMAL= // decimal of quoteToken on Ethereum network
+
+INFURA_API_KEY= // to retrieve price from uniswap
 ```
 
 ## Contribution
