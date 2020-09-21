@@ -78,5 +78,10 @@ QUOTE_ERC20_DECIMAL= // decimal of quoteToken on Ethereum network
 INFURA_API_KEY= // to retrieve price from uniswap
 ```
 
+**Run as a service with `pm2`**
+```
+pm2 start --name MMBOT ./mm-bot -- start
+```
+
 ## Contribution
 Feel free to create an issue or PR
