@@ -13,7 +13,7 @@ Using `mm-bot` binary
 ```
 wget https://github.com/tomochain/mm-bot/releases/download/${MM_BOT_VERSION}/mm-bot.${MM_BOT_VERSION}.linux-x64 \
     && chmod +x mm-bot.${MM_BOT_VERSION}.linux-x64 \
-    && mv mm-bot.${MM_BOT_VERSION}.linux-x64 /usr/bin/mm-bot \
+    && mv mm-bot.${MM_BOT_VERSION}.linux-x64 /usr/bin/mm-bot
 ```
 
 ## Usage
@@ -80,7 +80,7 @@ INFURA_API_KEY= // to retrieve price from uniswap
 
 **Run as a service with `pm2`**
 ```
-pm2 start --name MMBOT ./mm-bot -- start
+pm2 start --name MMBOT mm-bot -- start
 ```
 
 ## Contribution
