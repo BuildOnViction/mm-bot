@@ -78,5 +78,13 @@ QUOTE_ERC20_DECIMAL= // decimal of quoteToken on Ethereum network
 INFURA_API_KEY= // to retrieve price from uniswap
 ```
 
+## Price Provider
+```
+'pool', // auto-adjust pricing by state of the pool (balance of the tokens in the main wallet)
+'coingecko',  // get price from coingecko
+'binance', // get price from binance
+'ftx', // get price from ftx
+'uniswap' // get price from uniswap
+
 ## Contribution
 Feel free to create an issue or PR
