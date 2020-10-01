@@ -1,10 +1,22 @@
 {
   "name": "mm-bot",
+  "description": "",
   "version": "0.1.13-beta",
   "scripts": {
     "start": "./mm-bot start",
     "lint": "eslint --cache ./ --ext .js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomochain/mm-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomochain/mm-bot/issues"
+  },
+  "homepage": "https://github.com/tomochain/mm-bot",
   "dependencies": {
     "axios": "^0.18.1",
     "bignumber.js": "^9.0.0",
