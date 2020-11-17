@@ -84,7 +84,7 @@ Enter your base token name...`,
             questions.push({
                 type : 'input',
                 name : 'quoteName',
-                message : 'Enter your base quote name...',
+                message : 'Enter your quote token name...',
                 default: '',
                 when: (answers) => answers.priceProvider === 'coingecko'
             })
